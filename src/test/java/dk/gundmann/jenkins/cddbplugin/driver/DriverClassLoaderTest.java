@@ -16,4 +16,9 @@ public class DriverClassLoaderTest {
 		assertThat("The driver class was not found", loader.registerJdbcDriver("./target/test-classes/ojdbc7.jar"), is(notNullValue()));
 	}
 	
+	@Test(expected=DriverClassNotFoundException.class)
+	public void verifyThatAnExceptiIsThrownWhenNoDriverIsFound() throws Exception {
+		// given when then
+		loader.registerJdbcDriver("");
+	}
 }

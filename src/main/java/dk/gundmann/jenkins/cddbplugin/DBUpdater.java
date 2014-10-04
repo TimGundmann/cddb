@@ -19,8 +19,10 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
+import dk.gundmann.jenkins.cddbplugin.driver.DriverClassLoader;
+import dk.gundmann.jenkins.cddbplugin.utils.StringUtil;
+
 /**
- * Sample {@link Builder}.
  *
  * <p>
  * When the user configures the project and enables this builder,
@@ -39,29 +41,24 @@ import org.kohsuke.stapler.StaplerRequest;
 public class DBUpdater extends Builder {
 
     private String jdbcPath;
+    
+    private DriverClassLoader driverClassLoader = new DriverClassLoader();
 
-	// Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
     public DBUpdater(String jdbcPath) {
 		this.jdbcPath = jdbcPath;
     }
 
-    /**
-     * We'll use this from the <tt>config.jelly</tt>.
-     */
     public String getJdbcPath() {
         return jdbcPath;
     }
 
     @Override
-    public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
-        // This is where you 'build' the project.
-        // Since this is a dummy, we just say 'hello world' and call that a build.
-
-        // This also shows how you can consult the global configuration of the builder
-        
+    public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) {
+		driverClassLoader.registerJdbcDriver(jdbcPath);
     	return true;
     }
+
     // Overridden for better type safety.
     // If your plugin doesn't really define any property on Descriptor,
     // you don't have to do this.
