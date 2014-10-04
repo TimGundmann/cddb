@@ -38,16 +38,19 @@ import org.kohsuke.stapler.StaplerRequest;
  */
 public class DBUpdater extends Builder {
 
-    // Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
+    private String jdbcPath;
+
+	// Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
-    public DBUpdater(String driverPath) {
+    public DBUpdater(String jdbcPath) {
+		this.jdbcPath = jdbcPath;
     }
 
     /**
      * We'll use this from the <tt>config.jelly</tt>.
      */
     public String getJdbcPath() {
-        return null;
+        return jdbcPath;
     }
 
     @Override
@@ -67,7 +70,7 @@ public class DBUpdater extends Builder {
         return (DescriptorImpl)super.getDescriptor();
     }
 
-    /**
+	/**
      * Descriptor for {@link DBUpdater}. Used as a singleton.
      * The class is marked as public so that it can be accessed from views.
      *

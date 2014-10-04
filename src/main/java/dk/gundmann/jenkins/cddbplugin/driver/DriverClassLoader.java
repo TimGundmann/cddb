@@ -13,45 +13,41 @@ import java.util.jar.JarInputStream;
 
 public class DriverClassLoader {
 
-	public void updateJdbcDriver(String jarFileName) {
+	public Driver registerJdbcDriver(String jarFileName) {
 		try {
-			DriverManager.registerDriver(findDriverLClass(jarFileName, createClassLoader(jarFileName)));
+			Driver driver = findDriverLClass(jarFileName, createClassLoader(jarFileName));
+			DriverManager.registerDriver(driver);
+			return driver; 
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new DriverClassNotFoundException(jarFileName, e);
 		}
 	}
 
-	private URLClassLoader createClassLoader(String jarFileName) throws MalformedURLException {
-		return new URLClassLoader(new URL[] {createURLFrom(jarFileName)}, System.class.getClassLoader());
-	}
-
-	private URL createURLFrom(String jarFileName) throws MalformedURLException {
-		return new File(jarFileName).toURL();
-	}
-	
-	private Driver findDriverLClass(String jarFile, URLClassLoader classLoader) {
+	private Driver findDriverLClass(String jarFile, URLClassLoader classLoader) throws Exception {
 		JarInputStream is = null;
 		try {
 			is = new JarInputStream(new FileInputStream(jarFile));
 			JarEntry entry;
 			while ((entry = is.getNextJarEntry()) != null) {
 				if (isADriverClass(entry, classLoader)) {
-					return (Driver)classLoader.loadClass(convertToClassName(entry)).newInstance();
+					return (Driver) classLoader.loadClass(convertToClassName(entry)).newInstance();
 				}
-
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		finally {
-			try {
-				is.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		} finally {
+			is.close();
 		}
 		throw new DriverClassNotFoundException(jarFile);
 	}
+
+	private URLClassLoader createClassLoader(String jarFileName) throws MalformedURLException {
+		return new URLClassLoader(new URL[] { createURLFrom(jarFileName) }, System.class.getClassLoader());
+	}
+
+	@SuppressWarnings("deprecation")
+	private URL createURLFrom(String jarFileName) throws MalformedURLException {
+		return new File(jarFileName).toURL();
+	}
+
 
 	private String convertToClassName(JarEntry entry) {
 		return entry.getName().replace("/", ".").replace(".class", "");
@@ -65,7 +61,7 @@ public class DriverClassLoader {
 				e.printStackTrace();
 			}
 		}
-		return false; 
+		return false;
 	}
-	
+
 }

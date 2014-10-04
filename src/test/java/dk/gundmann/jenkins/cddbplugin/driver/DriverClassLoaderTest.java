@@ -1,8 +1,8 @@
 package dk.gundmann.jenkins.cddbplugin.driver;
 
-import java.io.File;
-import java.net.URL;
-import java.net.URLClassLoader;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 
 import org.junit.Test;
 
@@ -12,18 +12,8 @@ public class DriverClassLoaderTest {
 
 	@Test
 	public void givenILoadJdbcDriverTheDriverClassIsFound() throws Exception {
-		// given 
-//		File f = new File("./target/test-classes/ojdbc7.jar");
-//		f.exists();
-//	    URLClassLoader urlCl = new URLClassLoader(new URL[] { f.toURL()},System.class.getClassLoader());
-//	    Class testClass = urlCl.loadClass("oracle.net.ano.Ano");
-//	    testClass.newInstance();
-	    
-	    
-		loader.updateJdbcDriver("./target/test-classes/ojdbc7.jar");
-//		
-//		// when then
-//		assertThat("The driver class was not found", locator.findDriverLClass("target/test-classes/ojdbc7.jar"), is(notNullValue()));
+		// given when then
+		assertThat("The driver class was not found", loader.registerJdbcDriver("./target/test-classes/ojdbc7.jar"), is(notNullValue()));
 	}
 	
 }
