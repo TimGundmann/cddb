@@ -19,8 +19,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
-import dk.gundmann.jenkins.cddbplugin.driver.DriverClassLoader;
-import dk.gundmann.jenkins.cddbplugin.utils.StringUtil;
+import dk.gundmann.jenkins.cddbplugin.database.DriverClassLoader;
 
 /**
  *
@@ -40,18 +39,24 @@ import dk.gundmann.jenkins.cddbplugin.utils.StringUtil;
  */
 public class DBUpdater extends Builder {
 
-    private String jdbcPath;
-    
     private DriverClassLoader driverClassLoader = new DriverClassLoader();
 
+    private final String jdbcPath;
+	private final String connctionString;
+
     @DataBoundConstructor
-    public DBUpdater(String jdbcPath) {
+    public DBUpdater(String jdbcPath, String connectionString) {
 		this.jdbcPath = jdbcPath;
+		this.connctionString = connectionString;
     }
 
     public String getJdbcPath() {
         return jdbcPath;
     }
+
+	public String getConnectionString() {
+		return connctionString;
+	}
 
     @Override
     public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) {
@@ -59,9 +64,6 @@ public class DBUpdater extends Builder {
     	return true;
     }
 
-    // Overridden for better type safety.
-    // If your plugin doesn't really define any property on Descriptor,
-    // you don't have to do this.
     @Override
     public DescriptorImpl getDescriptor() {
         return (DescriptorImpl)super.getDescriptor();
@@ -77,14 +79,6 @@ public class DBUpdater extends Builder {
      */
     @Extension // This indicates to Jenkins that this is an implementation of an extension point.
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
-        /**
-         * To persist global configuration information,
-         * simply store it in a field and call save().
-         *
-         * <p>
-         * If you don't want fields to be persisted, use <tt>transient</tt>.
-         */
-        private boolean useFrench;
 
         /**
          * In order to load the persisted global configuration, you have to 
@@ -116,7 +110,6 @@ public class DBUpdater extends Builder {
         }
 
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {
-            // Indicates that this builder can be used with all kinds of project types 
             return true;
         }
 
@@ -124,29 +117,15 @@ public class DBUpdater extends Builder {
          * This human readable name is used in the configuration screen.
          */
         public String getDisplayName() {
-            return "Say hello world";
+            return "Database update";
         }
 
         @Override
         public boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
-            // To persist global configuration information,
-            // set that to properties and call save().
-            useFrench = formData.getBoolean("useFrench");
-            // ^Can also use req.bindJSON(this, formData);
-            //  (easier when there are many fields; need set* methods for this, like setUseFrench)
             save();
             return super.configure(req,formData);
         }
 
-        /**
-         * This method returns true if the global configuration says we should speak French.
-         *
-         * The method name is bit awkward because global.jelly calls this method to determine
-         * the initial state of the checkbox by the naming convention.
-         */
-        public boolean getUseFrench() {
-            return useFrench;
-        }
     }
 }
 

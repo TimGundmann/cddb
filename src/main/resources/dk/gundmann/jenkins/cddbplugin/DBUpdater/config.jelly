@@ -1,0 +1,12 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+
+<f:section title="Database configuration">
+  <f:entry field="jdbcPath" title="Path to jdbc driver">
+    <f:textbox />
+  </f:entry>
+  <f:entry field="connectionString" title="Connection string">
+    <f:textbox />
+  </f:entry>
+  
+</f:section>
+</j:jelly>

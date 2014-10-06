@@ -1,10 +1,13 @@
-package dk.gundmann.jenkins.cddbplugin.driver;
+package dk.gundmann.jenkins.cddbplugin.database;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
 import org.junit.Test;
+
+import dk.gundmann.jenkins.cddbplugin.database.DriverClassLoader;
+import dk.gundmann.jenkins.cddbplugin.database.DriverClassNotFoundException;
 
 public class DriverClassLoaderTest {
 	

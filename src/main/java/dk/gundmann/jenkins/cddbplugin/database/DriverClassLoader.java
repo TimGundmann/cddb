@@ -1,4 +1,4 @@
-package dk.gundmann.jenkins.cddbplugin.driver;
+package dk.gundmann.jenkins.cddbplugin.database;
 
 import java.io.File;
 import java.io.FileInputStream;
