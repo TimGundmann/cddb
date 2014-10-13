@@ -2,7 +2,6 @@ package dk.gundmann.jenkins.cddbplugin.database;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -19,7 +18,7 @@ public class DriverClassLoader {
 			DriverManager.registerDriver(driver);
 			return driver; 
 		} catch (Exception e) {
-			throw new DriverClassNotFoundException(jarFileName, e);
+			throw new DatabaseException(formateErrorMessage(jarFileName), e);
 		}
 	}
 
@@ -36,7 +35,7 @@ public class DriverClassLoader {
 		} finally {
 			is.close();
 		}
-		throw new DriverClassNotFoundException(jarFile);
+		throw new DatabaseException(formateErrorMessage(jarFile));
 	}
 
 	private URLClassLoader createClassLoader(String jarFileName) throws MalformedURLException {
@@ -48,7 +47,6 @@ public class DriverClassLoader {
 		return new File(jarFileName).toURL();
 	}
 
-
 	private String convertToClassName(JarEntry entry) {
 		return entry.getName().replace("/", ".").replace(".class", "");
 	}
@@ -57,11 +55,15 @@ public class DriverClassLoader {
 		if (entry.getName().endsWith(".class")) {
 			try {
 				return Driver.class.isAssignableFrom(classLoader.loadClass(convertToClassName(entry)));
-			} catch (Throwable e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 		return false;
+	}
+
+	private String formateErrorMessage(String jarFile) {
+		return String.format(DatabaseException.MISSING_DRIVER, jarFile);
 	}
 
 }

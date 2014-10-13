@@ -7,7 +7,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import org.junit.Test;
 
 import dk.gundmann.jenkins.cddbplugin.database.DriverClassLoader;
-import dk.gundmann.jenkins.cddbplugin.database.DriverClassNotFoundException;
+import dk.gundmann.jenkins.cddbplugin.database.DatabaseException;
 
 public class DriverClassLoaderTest {
 	
@@ -19,7 +19,7 @@ public class DriverClassLoaderTest {
 		assertThat("The driver class was not found", loader.registerJdbcDriver("./target/test-classes/ojdbc7.jar"), is(notNullValue()));
 	}
 	
-	@Test(expected=DriverClassNotFoundException.class)
+	@Test(expected=DatabaseException.class)
 	public void verifyThatAnExceptiIsThrownWhenNoDriverIsFound() throws Exception {
 		// given when then
 		loader.registerJdbcDriver("");
