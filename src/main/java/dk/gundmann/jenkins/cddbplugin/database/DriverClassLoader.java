@@ -10,15 +10,24 @@ import java.sql.DriverManager;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
-public class DriverClassLoader {
+import dk.gundmann.jenkins.cddbplugin.Command;
+import dk.gundmann.jenkins.cddbplugin.Result;
+import dk.gundmann.jenkins.cddbplugin.parameters.Parameters;
 
-	public Driver registerJdbcDriver(String jarFileName) {
+public class DriverClassLoader implements Command {
+
+	public static final String KEY_JAR_FILE_NAME = "jarFileName";
+
+	@Override
+	public Result execute(Parameters parameters) {
+		String jarFileName = "";
 		try {
+			jarFileName = parameters.valueAsString(KEY_JAR_FILE_NAME);
 			Driver driver = findDriverLClass(jarFileName, createClassLoader(jarFileName));
 			DriverManager.registerDriver(driver);
-			return driver; 
+			return Result.ok(); 
 		} catch (Exception e) {
-			throw new DatabaseException(formateErrorMessage(jarFileName), e);
+			return Result.faild(formateErrorMessage(jarFileName), e);
 		}
 	}
 

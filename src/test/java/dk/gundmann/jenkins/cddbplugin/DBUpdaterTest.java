@@ -18,7 +18,7 @@ public class DBUpdaterTest {
 
 	private DBUpdater dbUpdater;
 
-	@Test(expected = DatabaseException.class)
+	@Test(expected = DBUpdateException.class)
 	public void givenAnEmptyJdbcDriverWillFaile() throws Exception {
 		// given
 		dbUpdater = new DBUpdater(StringUtil.EMPTY, StringUtil.EMPTY);

@@ -1,35 +1,35 @@
 package dk.gundmann.jenkins.cddbplugin.database;
 
-import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class Connector {
+import dk.gundmann.jenkins.cddbplugin.Command;
+import dk.gundmann.jenkins.cddbplugin.Result;
+import dk.gundmann.jenkins.cddbplugin.parameters.Parameter;
+import dk.gundmann.jenkins.cddbplugin.parameters.Parameters;
 
-	private String connectionString;
-	private String password;
-	private String user;
+public class Connector implements Command {
 
-	public Connector withConnectionString(String connectionString) {
-		this.connectionString = connectionString;
-		return this;
-	}
-
-	public Connector withUser(String user) {
-		this.user = user;
-		return this;
-	}
-
-	public Connector withPassword(String password) {
-		this.password = password;
-		return this;
-	}
-
-	public Connection connect() {
+	public static final String KEY_CONNECTION = "connection";
+	
+	public static final String KEY_CONNECTION_STRING = "connectionString";
+	public static final String KEY_USER = "user";
+	public static final String KEY_PASSWORD = "password";
+	
+	@Override
+	public Result execute(Parameters parameters) {
 		try {
-			return DriverManager.getConnection(connectionString, user, password);
-		} catch (SQLException e) {
-			throw new DatabaseException("Error connectin to the database, the connection string migth not be correct", e); 
+			parameters.add(Parameter.aBuilder()
+					.withKey(KEY_CONNECTION)
+					.withValue(
+						DriverManager.getConnection(
+							parameters.valueAsString(KEY_CONNECTION_STRING), 
+							parameters.valueAsString(KEY_USER), 
+							parameters.valueAsString(KEY_PASSWORD)))
+					.build());
+			return Result.ok();
+		} catch (Exception e) {
+			return Result.faild("Error connectin to the database, the connection string migth not be correct", e); 
 		}
 	}
 

@@ -10,6 +10,9 @@ import hudson.tasks.Builder;
 import hudson.util.FormValidation;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.servlet.ServletException;
 
@@ -19,7 +22,10 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
+import dk.gundmann.jenkins.cddbplugin.database.Connector;
 import dk.gundmann.jenkins.cddbplugin.database.DriverClassLoader;
+import dk.gundmann.jenkins.cddbplugin.parameters.Parameter;
+import dk.gundmann.jenkins.cddbplugin.parameters.Parameters;
 
 /**
  *
@@ -60,11 +66,39 @@ public class DBUpdater extends Builder {
 
     @Override
     public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) {
-		driverClassLoader.registerJdbcDriver(jdbcPath);
+    	exeucteCommands(setUpCommands(), setUpParemters());
     	return true;
     }
 
-    @Override
+    private void exeucteCommands(List<Command> commands, Parameters parameters) {
+		for (Command command : commands) {
+			Result result = command.execute(parameters);
+			if (result.failed()) {
+				throw new DBUpdateException(result);
+			}
+		}
+	}
+
+	private List<Command> setUpCommands() {
+    	return Arrays.asList(new Command[] {
+    			new DriverClassLoader(),
+    			new Connector()
+    	});
+	}
+
+	private Parameters setUpParemters() {
+		return new Parameters(
+			Parameter.aBuilder()
+				.withKey(DriverClassLoader.KEY_JAR_FILE_NAME)
+				.withValue(jdbcPath)
+				.build(),
+			Parameter.aBuilder()
+				.withKey(Connector.KEY_CONNECTION_STRING)
+				.withValue(connctionString)
+				.build());
+	}
+
+	@Override
     public DescriptorImpl getDescriptor() {
         return (DescriptorImpl)super.getDescriptor();
     }
