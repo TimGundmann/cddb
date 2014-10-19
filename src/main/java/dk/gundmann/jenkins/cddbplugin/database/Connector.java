@@ -1,7 +1,6 @@
 package dk.gundmann.jenkins.cddbplugin.database;
 
 import java.sql.DriverManager;
-import java.sql.SQLException;
 
 import dk.gundmann.jenkins.cddbplugin.Command;
 import dk.gundmann.jenkins.cddbplugin.Result;

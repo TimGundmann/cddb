@@ -1,6 +1,5 @@
 package dk.gundmann.jenkins.cddbplugin;
 
-import java.sql.SQLException;
 
 public class Result {
 
@@ -18,12 +17,15 @@ public class Result {
 		return new Result(true, "", null);
 	}
 	
-	public static Object faild() {
+	public static Result faild() {
 		return new Result(false, "", null);
 	}
 
 	public static Result faild(String message, Exception exception) {
-		return new Result(false, message, exception);
+		Result result = new Result(false, message, exception);
+		System.out.println(message);
+		exception.printStackTrace();
+		return result;
 	}
 	
 	public boolean isOk() {

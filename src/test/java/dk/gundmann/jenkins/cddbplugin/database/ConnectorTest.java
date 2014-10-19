@@ -3,6 +3,7 @@ package dk.gundmann.jenkins.cddbplugin.database;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -11,6 +12,7 @@ import dk.gundmann.jenkins.cddbplugin.annotations.IntegrationTest;
 import dk.gundmann.jenkins.cddbplugin.parameters.Parameter;
 import dk.gundmann.jenkins.cddbplugin.parameters.Parameters;
 
+@Ignore
 @Category(IntegrationTest.class)
 public class ConnectorTest {
 

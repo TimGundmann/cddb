@@ -1,5 +1,6 @@
 package dk.gundmann.jenkins.cddbplugin.parameters;
 
+import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,6 +31,11 @@ public class Parameters {
 
 	public void add(Parameter parameter) {
 		this.parameters.put(parameter.getKey(), parameter);
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> T valueAsType(String key, Class<T> classType) {
+		return (T)parameters.get(key).getValue();
 	}
 
 }
