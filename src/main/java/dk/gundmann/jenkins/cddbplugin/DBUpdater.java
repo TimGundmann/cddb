@@ -23,6 +23,7 @@ import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
 import dk.gundmann.jenkins.cddbplugin.database.Connector;
+import dk.gundmann.jenkins.cddbplugin.database.CreateVersionTable;
 import dk.gundmann.jenkins.cddbplugin.database.DriverClassLoader;
 import dk.gundmann.jenkins.cddbplugin.parameters.Parameter;
 import dk.gundmann.jenkins.cddbplugin.parameters.Parameters;
@@ -45,15 +46,15 @@ import dk.gundmann.jenkins.cddbplugin.parameters.Parameters;
  */
 public class DBUpdater extends Builder {
 
-    private DriverClassLoader driverClassLoader = new DriverClassLoader();
-
     private final String jdbcPath;
 	private final String connctionString;
+	private final String versionTableName;
 
     @DataBoundConstructor
-    public DBUpdater(String jdbcPath, String connectionString) {
+    public DBUpdater(String jdbcPath, String connectionString, String versionTableName) {
 		this.jdbcPath = jdbcPath;
 		this.connctionString = connectionString;
+		this.versionTableName = versionTableName;
     }
 
     public String getJdbcPath() {
@@ -95,13 +96,22 @@ public class DBUpdater extends Builder {
 			Parameter.aBuilder()
 				.withKey(Connector.KEY_CONNECTION_STRING)
 				.withValue(connctionString)
+				.build(),
+			Parameter.aBuilder()
+				.withKey(CreateVersionTable.KEY_VERSION_TABLE_NAME)
+				.withValue(versionTableName)
 				.build());
+
 	}
 
 	@Override
     public DescriptorImpl getDescriptor() {
         return (DescriptorImpl)super.getDescriptor();
     }
+
+	public String getVersionTableName() {
+		return versionTableName;
+	}
 
 	/**
      * Descriptor for {@link DBUpdater}. Used as a singleton.
