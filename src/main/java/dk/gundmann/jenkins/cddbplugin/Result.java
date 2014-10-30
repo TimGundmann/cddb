@@ -40,6 +40,15 @@ public class Result {
 		return message;
 	}
 
+	public Exception exception() {
+		return exception;
+	}
+
+	@Override
+	public String toString() {
+		return "Result [ok=" + ok + ", message=" + message + ", exception=" + exception + "]";
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -60,10 +69,6 @@ public class Result {
 		if (ok != other.ok)
 			return false;
 		return true;
-	}
-
-	public Exception exception() {
-		return exception;
 	}
 
 }

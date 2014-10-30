@@ -7,6 +7,9 @@
   <f:entry field="connectionString" title="Connection string">
     <f:textbox />
   </f:entry>
+  <f:entry field="versionTableName" title="Version table name">
+    <f:textbox />
+  </f:entry>
   
 </f:section>
 </j:jelly>

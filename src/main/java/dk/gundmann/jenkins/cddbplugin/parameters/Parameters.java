@@ -23,14 +23,16 @@ public class Parameters {
 		throw new MissingParameter(key);
 	}
 
-	public void addAll(Parameter... parameters) {
+	public Parameters addAll(Parameter... parameters) {
 		for (Parameter parameter : parameters) {
 			add(parameter);
 		}
+		return this;
 	}
 
-	public void add(Parameter parameter) {
+	public Parameters add(Parameter parameter) {
 		this.parameters.put(parameter.getKey(), parameter);
+		return this;
 	}
 
 	@SuppressWarnings("unchecked")

@@ -27,5 +27,9 @@ public class StringUtilTest {
 		assertThat(StringUtil.isEmpty(NOT_EMPTY), is(Boolean.FALSE));
 	}
 	
-	
+	@Test
+	public void verifyThatStringIsNotEmpty() throws Exception {
+		// given when then
+		assertThat(StringUtil.isNotEmpty(NOT_EMPTY), is(Boolean.TRUE));
+	}
 }
