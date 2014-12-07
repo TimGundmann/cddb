@@ -6,22 +6,21 @@ import hudson.model.AbstractBuild;
 
 import org.junit.Test;
 
-import dk.gundmann.jenkins.cddbplugin.database.DatabaseException;
 import dk.gundmann.jenkins.cddbplugin.utils.StringUtil;
 
 
-public class DBUpdaterTest {
+public class CDDBTest {
 
 	private AbstractBuild<?, ?> build;
 	private Launcher launcher;
 	private BuildListener listener;
 
-	private DBUpdater dbUpdater;
+	private CDDB dbUpdater;
 
 	@Test(expected = DBUpdateException.class)
 	public void givenAnEmptyJdbcDriverWillFaile() throws Exception {
 		// given
-		dbUpdater = new DBUpdater(StringUtil.EMPTY, StringUtil.EMPTY, StringUtil.EMPTY);
+		dbUpdater = new CDDB(StringUtil.EMPTY, StringUtil.EMPTY, StringUtil.EMPTY);
 
 		// when then
 		dbUpdater.perform(build, launcher, listener);

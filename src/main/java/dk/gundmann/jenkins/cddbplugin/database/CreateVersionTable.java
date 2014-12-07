@@ -12,10 +12,7 @@ import dk.gundmann.jenkins.cddbplugin.utils.StringUtil;
 
 public class CreateVersionTable implements Command {
 	
-	public static final String DEFAULT_TABLE_NAME = "dbupdate_version";
-	public static final String KEY_VERSION_TABLE_NAME = "versionTableName";
-
-	private static final String CREATE_VERSION_TABLE = "create table %s(version INTEGER not NULL)";
+	private static final String CREATE_VERSION_TABLE = "create table %s(databaseVersion INTEGER not NULL, applicationVersion varchar(255) not NULL, fileName varchar(1000), fileDate TIMESTAMP)";
 	private static final String NO_CATALOG = null;
 	private static final String NO_SCHEMA_PATTERN = null;
 	private static final String[] NO_TYPES = new String[0];
@@ -23,7 +20,7 @@ public class CreateVersionTable implements Command {
 	@Override
 	public Result execute(Parameters parameters) {
 		try	{
-			createTable(resolvedConnection(parameters), convertTableName(resolveTableName(parameters)));
+			createTable(resolvedConnection(parameters), resolveTableName(parameters));
 		} catch (Exception e) {
 			return Result.faild("Error while createing version table", e);
 		}
@@ -32,7 +29,7 @@ public class CreateVersionTable implements Command {
 
 	private String resolveTableName(Parameters parameters) {
 		try {
-			return parameters.valueAsString(KEY_VERSION_TABLE_NAME);
+			return parameters.valueAsString(TableNameResolver.KEY_VERSION_TABLE_NAME);
 		} catch (MissingParameter e) {
 			return StringUtil.EMPTY;
 		}
@@ -53,9 +50,4 @@ public class CreateVersionTable implements Command {
 		ResultSet tables = connection.getMetaData().getTables(NO_CATALOG, NO_SCHEMA_PATTERN, tableName, NO_TYPES);
 		return !tables.first();
 	}
-
-	private String convertTableName(String tableName) {
-		return StringUtil.isEmpty(tableName) ? DEFAULT_TABLE_NAME : tableName;
-	}
-
 }

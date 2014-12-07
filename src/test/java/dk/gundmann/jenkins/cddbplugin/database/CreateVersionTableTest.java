@@ -26,7 +26,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import dk.gundmann.jenkins.cddbplugin.Result;
 import dk.gundmann.jenkins.cddbplugin.parameters.Parameter;
 import dk.gundmann.jenkins.cddbplugin.parameters.Parameters;
-import dk.gundmann.jenkins.cddbplugin.utils.StringUtil;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CreateVersionTableTest {
@@ -53,7 +52,7 @@ public class CreateVersionTableTest {
 	}
 	
 	@Test
-	public void verifyThatTheTableCanBeCreated() throws Exception {
+	public void verifyThatTheTablesIsCreated() throws Exception {
 		// given 
 		setUpTableExists(false);
 		
@@ -74,23 +73,6 @@ public class CreateVersionTableTest {
 	}
 	
 	@Test
-	public void verifyThatTheDefaultTableNameIsSetIfNonSpecified() throws Exception {
-		// given
-		setUpTableExists(false);
-
-		// when
-		Result result = createVersionTable.execute(parameters.add(
-				Parameter.aBuilder()
-					.withKey(CreateVersionTable.KEY_VERSION_TABLE_NAME)
-					.withValue(StringUtil.EMPTY)
-					.build()));
-
-		// then
-		assertThat(result, equalTo(Result.ok()));
-		verify(statement).execute(contains(CreateVersionTable.DEFAULT_TABLE_NAME));
-	}
-	
-	@Test
 	public void givenATableNameWillUseIt() throws Exception {
 		// given
 		setUpTableExists(false);
@@ -98,7 +80,7 @@ public class CreateVersionTableTest {
 		// when
 		Result result = createVersionTable.execute(parameters.add(
 				Parameter.aBuilder()
-					.withKey(CreateVersionTable.KEY_VERSION_TABLE_NAME)
+					.withKey(TableNameResolver.KEY_VERSION_TABLE_NAME)
 					.withValue(GIVEN_TABLE_NAME)
 					.build()));
 

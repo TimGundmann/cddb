@@ -1,6 +1,5 @@
 package dk.gundmann.jenkins.cddbplugin.parameters;
 
-import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 

@@ -10,7 +10,6 @@ import hudson.tasks.Builder;
 import hudson.util.FormValidation;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,8 +22,8 @@ import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
 import dk.gundmann.jenkins.cddbplugin.database.Connector;
-import dk.gundmann.jenkins.cddbplugin.database.CreateVersionTable;
 import dk.gundmann.jenkins.cddbplugin.database.DriverClassLoader;
+import dk.gundmann.jenkins.cddbplugin.database.TableNameResolver;
 import dk.gundmann.jenkins.cddbplugin.parameters.Parameter;
 import dk.gundmann.jenkins.cddbplugin.parameters.Parameters;
 
@@ -33,7 +32,7 @@ import dk.gundmann.jenkins.cddbplugin.parameters.Parameters;
  * <p>
  * When the user configures the project and enables this builder,
  * {@link DescriptorImpl#newInstance(StaplerRequest)} is invoked
- * and a new {@link DBUpdater} is created. The created
+ * and a new {@link CDDB} is created. The created
  * instance is persisted to the project configuration XML by using
  * XStream, so this allows you to use instance fields (like {@link #name})
  * to remember the configuration.
@@ -44,14 +43,14 @@ import dk.gundmann.jenkins.cddbplugin.parameters.Parameters;
  *
  * @author Tim Gundmann
  */
-public class DBUpdater extends Builder {
+public class CDDB extends Builder {
 
     private final String jdbcPath;
 	private final String connctionString;
 	private final String versionTableName;
 
     @DataBoundConstructor
-    public DBUpdater(String jdbcPath, String connectionString, String versionTableName) {
+    public CDDB(String jdbcPath, String connectionString, String versionTableName) {
 		this.jdbcPath = jdbcPath;
 		this.connctionString = connectionString;
 		this.versionTableName = versionTableName;
@@ -82,6 +81,7 @@ public class DBUpdater extends Builder {
 
 	private List<Command> setUpCommands() {
     	return Arrays.asList(new Command[] {
+    			new TableNameResolver(),
     			new DriverClassLoader(),
     			new Connector()
     	});
@@ -98,7 +98,7 @@ public class DBUpdater extends Builder {
 				.withValue(connctionString)
 				.build(),
 			Parameter.aBuilder()
-				.withKey(CreateVersionTable.KEY_VERSION_TABLE_NAME)
+				.withKey(TableNameResolver.KEY_VERSION_TABLE_NAME)
 				.withValue(versionTableName)
 				.build());
 
@@ -114,7 +114,7 @@ public class DBUpdater extends Builder {
 	}
 
 	/**
-     * Descriptor for {@link DBUpdater}. Used as a singleton.
+     * Descriptor for {@link CDDB}. Used as a singleton.
      * The class is marked as public so that it can be accessed from views.
      *
      * <p>
@@ -153,7 +153,8 @@ public class DBUpdater extends Builder {
             return FormValidation.ok();
         }
 
-        public boolean isApplicable(Class<? extends AbstractProject> aClass) {
+        @SuppressWarnings("rawtypes")
+		public boolean isApplicable(Class<? extends AbstractProject> aClass) {
             return true;
         }
 
