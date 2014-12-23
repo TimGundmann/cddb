@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.greaterThan;
 
 import java.util.Date;
 
+import org.junit.After;
 import org.junit.Test;
 
 import dk.gundmann.jenkins.cddbplugin.Result;
@@ -18,9 +19,16 @@ public class ResolveSqlScriptTest {
 
 	private static final String UPDATES_FOLDER = "src/test/resources/updates";
 
+	private static final String NEW_UPDATE_FILE_NAME = UPDATES_FOLDER + "/newUpdateFile.sql";
+
 	private ResolveSqlScript extractSqlScript = new ResolveSqlScript();
 
 	private TestUtils testUtils = new TestUtils();
+
+	@After
+	public void tearDown() {
+		testUtils.removeFile(NEW_UPDATE_FILE_NAME);
+	}
 	
 	@Test
 	public void verifyThatIfNoUpdateScriptExistsNothingHappens() throws Exception {
@@ -75,7 +83,7 @@ public class ResolveSqlScriptTest {
 	public void givenAnSqlFileThatIsNotUpdatedAndANewVersionWillReturnIt() throws Exception {
 		// given
 		Date now = new Date();
-		testUtils.createUpdateFile(UPDATES_FOLDER + "/newUpdateFile.sql");
+		testUtils.createUpdateFile(NEW_UPDATE_FILE_NAME);
 		
 		testUtils.insertRowWithApplicationVersion(1, "0.9" , "updatetabel.sql", now);
 		

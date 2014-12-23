@@ -76,4 +76,12 @@ public class TestUtils {
 		}
 	}
 
+	public void removeFile(String fileName) {
+		try {
+			new File(fileName).delete();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 }
