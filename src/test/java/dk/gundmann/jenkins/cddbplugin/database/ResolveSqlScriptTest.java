@@ -15,6 +15,8 @@ import dk.gundmann.jenkins.cddbplugin.utils.TestUtils;
 
 public class ResolveSqlScriptTest {
 
+	private static final String UPDATE_FOLDER_EMPTY = "src/test/resources/emptyupdate";
+
 	private static final String UPDATE_FOLDER_NOT_EXISTS = "src/test/resources/ccsdfsfd";
 
 	private static final String UPDATES_FOLDER = "src/test/resources/updates";
@@ -32,7 +34,10 @@ public class ResolveSqlScriptTest {
 	
 	@Test
 	public void verifyThatIfNoUpdateScriptExistsNothingHappens() throws Exception {
-		// given when
+		// given
+		testUtils.makeDir(UPDATE_FOLDER_EMPTY);
+		
+		// when
 		Result result = extractSqlScript.execute(testUtils.getParameters().addAll(
 				Parameter.aBuilder()
 					.withKey(ResolveSqlScript.KEY_VERSION)
@@ -40,7 +45,7 @@ public class ResolveSqlScriptTest {
 					.build(),
 				Parameter.aBuilder()
 					.withKey(ResolveSqlScript.SCRIPT_FOLDER)
-					.withValue("src/test/resources/emptyupdate")
+					.withValue(UPDATE_FOLDER_EMPTY)
 					.build()));
 
 		// then

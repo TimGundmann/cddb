@@ -76,6 +76,14 @@ public class TestUtils {
 		}
 	}
 
+	public void makeDir(String folderName) {
+		try {
+			new File(folderName).mkdir();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	public void removeFile(String fileName) {
 		try {
 			new File(fileName).delete();
