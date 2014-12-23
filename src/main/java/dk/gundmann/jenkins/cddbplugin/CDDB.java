@@ -23,6 +23,7 @@ import org.kohsuke.stapler.StaplerRequest;
 
 import dk.gundmann.jenkins.cddbplugin.database.Connector;
 import dk.gundmann.jenkins.cddbplugin.database.DriverClassLoader;
+import dk.gundmann.jenkins.cddbplugin.database.ResolveSqlScript;
 import dk.gundmann.jenkins.cddbplugin.database.TableNameResolver;
 import dk.gundmann.jenkins.cddbplugin.parameters.Parameter;
 import dk.gundmann.jenkins.cddbplugin.parameters.Parameters;
@@ -48,12 +49,14 @@ public class CDDB extends Builder {
     private final String jdbcPath;
 	private final String connctionString;
 	private final String versionTableName;
+	private final String version;
 
     @DataBoundConstructor
-    public CDDB(String jdbcPath, String connectionString, String versionTableName) {
+    public CDDB(String jdbcPath, String connectionString, String versionTableName, String version) {
 		this.jdbcPath = jdbcPath;
 		this.connctionString = connectionString;
 		this.versionTableName = versionTableName;
+		this.version = version;
     }
 
     public String getJdbcPath() {
@@ -64,7 +67,15 @@ public class CDDB extends Builder {
 		return connctionString;
 	}
 
-    @Override
+	public String getVersionTableName() {
+		return versionTableName;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	@Override
     public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) {
     	exeucteCommands(setUpCommands(), setUpParemters());
     	return true;
@@ -89,6 +100,10 @@ public class CDDB extends Builder {
 
 	private Parameters setUpParemters() {
 		return new Parameters(
+				Parameter.aBuilder()
+				.withKey(ResolveSqlScript.KEY_VERSION)
+				.withValue(version)
+				.build(),
 			Parameter.aBuilder()
 				.withKey(DriverClassLoader.KEY_JAR_FILE_NAME)
 				.withValue(jdbcPath)
@@ -108,10 +123,6 @@ public class CDDB extends Builder {
     public DescriptorImpl getDescriptor() {
         return (DescriptorImpl)super.getDescriptor();
     }
-
-	public String getVersionTableName() {
-		return versionTableName;
-	}
 
 	/**
      * Descriptor for {@link CDDB}. Used as a singleton.

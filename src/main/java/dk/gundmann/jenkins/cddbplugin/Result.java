@@ -27,7 +27,13 @@ public class Result {
 		exception.printStackTrace();
 		return result;
 	}
-	
+
+	public static Result faild(String message) {
+		Result result = new Result(false, message, null);
+		System.out.println(message);
+		return result;
+	}
+
 	public boolean isOk() {
 		return ok;
 	}

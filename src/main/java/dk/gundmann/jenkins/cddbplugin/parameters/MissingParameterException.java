@@ -1,8 +1,10 @@
 package dk.gundmann.jenkins.cddbplugin.parameters;
 
-public class MissingParameter extends RuntimeException {
+import dk.gundmann.jenkins.cddbplugin.CDDBException;
 
-	public MissingParameter(String key) {
+public class MissingParameterException extends CDDBException {
+
+	public MissingParameterException(String key) {
 		super("The property was missing: " + key);
 	}
 

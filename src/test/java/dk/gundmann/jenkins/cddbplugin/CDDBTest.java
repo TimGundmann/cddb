@@ -20,7 +20,7 @@ public class CDDBTest {
 	@Test(expected = DBUpdateException.class)
 	public void givenAnEmptyJdbcDriverWillFaile() throws Exception {
 		// given
-		dbUpdater = new CDDB(StringUtil.EMPTY, StringUtil.EMPTY, StringUtil.EMPTY);
+		dbUpdater = new CDDB(StringUtil.EMPTY, StringUtil.EMPTY, StringUtil.EMPTY, StringUtil.EMPTY);
 
 		// when then
 		dbUpdater.perform(build, launcher, listener);

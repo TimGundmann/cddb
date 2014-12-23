@@ -1,6 +1,8 @@
 package dk.gundmann.jenkins.cddbplugin.parameters;
 
+import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Parameters {
@@ -19,7 +21,7 @@ public class Parameters {
 		if (parameters.containsKey(key)) {
 			return parameters.get(key).getValue().toString();
 		}
-		throw new MissingParameter(key);
+		throw new MissingParameterException(key);
 	}
 
 	public Parameters addAll(Parameter... parameters) {
@@ -37,6 +39,11 @@ public class Parameters {
 	@SuppressWarnings("unchecked")
 	public <T> T valueAsType(String key, Class<T> classType) {
 		return (T)parameters.get(key).getValue();
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<File> valueAsFiles(String key) {
+		return (List<File>)parameters.get(key).getValue();
 	}
 
 }
