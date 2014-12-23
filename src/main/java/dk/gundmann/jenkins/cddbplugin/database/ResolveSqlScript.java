@@ -94,6 +94,8 @@ public class ResolveSqlScript implements Command {
 				File file = new File(dir + "/" + fileName);
 				try {
 					BasicFileAttributes attr = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
+					System.out.println(attr.creationTime());
+					System.out.println(file.toPath());
 					if (attr.creationTime().to(TimeUnit.MILLISECONDS) > lastDate.getTime()) {
 						updateFiles.add(file);
 					}
