@@ -58,7 +58,7 @@ public class TestUtils {
 			getConnection().createStatement().execute(
 					"insert into " + TableNameResolver.DEFAULT_TABLE_NAME
 							+ "(databaseVersion, applicationVersion, fileName, createdDate) values(" + dbVersion + ", "
-							+ version + ", '" + fileName + "', '" + new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(createdDate) +"')");
+							+ version + ", '" + fileName + "', '" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(createdDate) +"')");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
