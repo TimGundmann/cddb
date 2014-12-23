@@ -88,15 +88,17 @@ public class ResolveSqlScript implements Command {
 	}
 
 	private Object createFilesNewerThan(Date lastDate, File dir) {
+		System.out.println("db date: " + lastDate);
 		List<File> updateFiles = new ArrayList<File>();
 		if (dir.list() != null) {
 			for (String fileName : dir.list()) {
 				File file = new File(dir + "/" + fileName);
 				try {
 					BasicFileAttributes attr = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
-					System.out.println(attr.creationTime());
-					System.out.println(file.toPath());
+					System.out.print(attr.creationTime());
+					System.out.println(" " + file.toPath());
 					if (attr.creationTime().to(TimeUnit.MILLISECONDS) > lastDate.getTime()) {
+						System.out.println("Added: " + file.toPath());
 						updateFiles.add(file);
 					}
 				} catch (IOException e) {
