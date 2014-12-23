@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import org.junit.After;
@@ -87,10 +88,11 @@ public class ResolveSqlScriptTest {
 	@Test
 	public void givenAnSqlFileThatIsNotUpdatedAndANewVersionWillReturnIt() throws Exception {
 		// given
-		Date now = new Date();
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.HOUR, -2);
 		testUtils.createUpdateFile(NEW_UPDATE_FILE_NAME);
 		
-		testUtils.insertRowWithApplicationVersion(1, "0.9" , "updatetabel.sql", now);
+		testUtils.insertRowWithApplicationVersion(1, "0.9" , "updatetabel.sql", calendar.getTime());
 		
 		// when
 		Result result = extractSqlScript.execute(testUtils.getParameters().addAll(
