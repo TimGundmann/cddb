@@ -1,4 +1,4 @@
-package dk.gundmann.jenkins.cddbplugin.database;
+package dk.gundmann.jenkins.cddbplugin.commands;
 
 import java.io.File;
 import java.io.FileInputStream;

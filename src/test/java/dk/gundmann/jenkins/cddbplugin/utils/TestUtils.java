@@ -7,10 +7,10 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import dk.gundmann.jenkins.cddbplugin.database.Connector;
-import dk.gundmann.jenkins.cddbplugin.database.CreateVersionTable;
-import dk.gundmann.jenkins.cddbplugin.database.DriverClassLoader;
-import dk.gundmann.jenkins.cddbplugin.database.TableNameResolver;
+import dk.gundmann.jenkins.cddbplugin.commands.Connector;
+import dk.gundmann.jenkins.cddbplugin.commands.CreateVersionTable;
+import dk.gundmann.jenkins.cddbplugin.commands.DriverClassLoader;
+import dk.gundmann.jenkins.cddbplugin.commands.TableNameResolver;
 import dk.gundmann.jenkins.cddbplugin.parameters.Parameter;
 import dk.gundmann.jenkins.cddbplugin.parameters.Parameters;
 

@@ -1,4 +1,4 @@
-package dk.gundmann.jenkins.cddbplugin.database;
+package dk.gundmann.jenkins.cddbplugin.commands;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -24,6 +24,9 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import dk.gundmann.jenkins.cddbplugin.Result;
+import dk.gundmann.jenkins.cddbplugin.commands.Connector;
+import dk.gundmann.jenkins.cddbplugin.commands.CreateVersionTable;
+import dk.gundmann.jenkins.cddbplugin.commands.TableNameResolver;
 import dk.gundmann.jenkins.cddbplugin.parameters.Parameter;
 import dk.gundmann.jenkins.cddbplugin.parameters.Parameters;
 

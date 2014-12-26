@@ -1,4 +1,4 @@
-package dk.gundmann.jenkins.cddbplugin.database;
+package dk.gundmann.jenkins.cddbplugin.commands;
 
 import dk.gundmann.jenkins.cddbplugin.Command;
 import dk.gundmann.jenkins.cddbplugin.Result;

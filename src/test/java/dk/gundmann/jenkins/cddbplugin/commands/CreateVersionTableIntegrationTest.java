@@ -1,4 +1,4 @@
-package dk.gundmann.jenkins.cddbplugin.database;
+package dk.gundmann.jenkins.cddbplugin.commands;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -6,6 +6,8 @@ import java.sql.Connection;
 
 import org.junit.Test;
 
+import dk.gundmann.jenkins.cddbplugin.commands.CreateVersionTable;
+import dk.gundmann.jenkins.cddbplugin.commands.TableNameResolver;
 import dk.gundmann.jenkins.cddbplugin.utils.TestUtils;
 
 public class CreateVersionTableIntegrationTest {

@@ -1,4 +1,4 @@
-package dk.gundmann.jenkins.cddbplugin.database;
+package dk.gundmann.jenkins.cddbplugin.commands;
 
 public class DatabaseException extends RuntimeException {
 	
