@@ -70,6 +70,7 @@ public class ResolveSqlScript implements Command {
 
 	private void generateRollBackFiles(File dir, Parameters parameters) {
 		parameters.add(Parameter.aBuilder().withKey(SCRIPTS).withValue(createFilesFromDBList(dir, parameters)).build());
+		parameters.add(Parameter.aBuilder().withKey(ROLLBACK).withValue(Boolean.TRUE).build());
 	}
 
 	private Result validate(File dir) {

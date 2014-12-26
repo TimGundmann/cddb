@@ -3,15 +3,14 @@ package dk.gundmann.jenkins.cddbplugin.commands;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
 
 import java.util.Calendar;
-import java.util.Date;
 
 import org.junit.After;
 import org.junit.Test;
 
 import dk.gundmann.jenkins.cddbplugin.Result;
-import dk.gundmann.jenkins.cddbplugin.commands.ResolveSqlScript;
 import dk.gundmann.jenkins.cddbplugin.parameters.Parameter;
 import dk.gundmann.jenkins.cddbplugin.utils.TestUtils;
 
@@ -131,5 +130,25 @@ public class ResolveSqlScriptTest {
 		// then
 		assertThat(result, equalTo(Result.ok()));
 		assertThat(testUtils.getParameters().valueAsFiles(ResolveSqlScript.SCRIPTS).size(), equalTo(2));
+	}
+	
+	@Test
+	public void verifyThatTheRollbackFlagIsSet() throws Exception {
+		// given
+		testUtils.insertRowWithApplicationVersion(1, "1.0", "updatetabel.sql");
+
+		// when
+		extractSqlScript.execute(testUtils.getParameters().addAll(
+				Parameter.aBuilder()
+					.withKey(ResolveSqlScript.KEY_VERSION)
+					.withValue("1.0")
+					.build(),
+				Parameter.aBuilder()
+					.withKey(ResolveSqlScript.SCRIPT_FOLDER)
+					.withValue(UPDATES_FOLDER)
+					.build()));
+
+		// then
+		assertThat(testUtils.getParameters().valueAsBoolean(ResolveSqlScript.ROLLBACK), is(Boolean.TRUE));
 	}
 }

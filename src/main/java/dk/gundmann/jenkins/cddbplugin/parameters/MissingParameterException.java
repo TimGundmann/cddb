@@ -5,10 +5,9 @@ import dk.gundmann.jenkins.cddbplugin.CDDBException;
 public class MissingParameterException extends CDDBException {
 
 	public MissingParameterException(String key) {
-		super("The property was missing: " + key);
+		super("The property was missing with key: \"" + key + "\"");
 	}
 
 	private static final long serialVersionUID = 8737907747784831815L;
-
 	
 }

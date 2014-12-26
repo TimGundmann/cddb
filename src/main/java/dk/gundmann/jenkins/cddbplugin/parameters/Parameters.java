@@ -14,14 +14,14 @@ public class Parameters {
 	}
 	
 	public Parameter getParameter(String key) {
-		return parameters.get(key);
+		if (parameters.containsKey(key)) {
+			return parameters.get(key);
+		}
+		throw new MissingParameterException(key);
 	}
 
 	public String valueAsString(String key) {
-		if (parameters.containsKey(key)) {
-			return parameters.get(key).getValue().toString();
-		}
-		throw new MissingParameterException(key);
+		return getParameter(key).getValue().toString();
 	}
 
 	public Parameters addAll(Parameter... parameters) {
@@ -38,12 +38,16 @@ public class Parameters {
 
 	@SuppressWarnings("unchecked")
 	public <T> T valueAsType(String key, Class<T> classType) {
-		return (T)parameters.get(key).getValue();
+		return (T)getParameter(key).getValue();
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<File> valueAsFiles(String key) {
-		return (List<File>)parameters.get(key).getValue();
+		return (List<File>)getParameter(key).getValue();
+	}
+
+	public boolean valueAsBoolean(String key) {
+		return valueAsType(key, Boolean.class);
 	}
 
 }
