@@ -21,7 +21,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
-import dk.gundmann.jenkins.cddbplugin.commands.Connector;
+import dk.gundmann.jenkins.cddbplugin.commands.DatabaseConnector;
 import dk.gundmann.jenkins.cddbplugin.commands.DriverClassLoader;
 import dk.gundmann.jenkins.cddbplugin.commands.ResolveSqlScript;
 import dk.gundmann.jenkins.cddbplugin.commands.TableNameResolver;
@@ -94,7 +94,7 @@ public class CDDB extends Builder {
     	return Arrays.asList(new Command[] {
     			new TableNameResolver(),
     			new DriverClassLoader(),
-    			new Connector(),
+    			new DatabaseConnector(),
     			new ResolveSqlScript()
     	});
 	}
@@ -110,7 +110,7 @@ public class CDDB extends Builder {
 				.withValue(jdbcPath)
 				.build(),
 			Parameter.aBuilder()
-				.withKey(Connector.KEY_CONNECTION_STRING)
+				.withKey(DatabaseConnector.KEY_CONNECTION_STRING)
 				.withValue(connctionString)
 				.build(),
 			Parameter.aBuilder()

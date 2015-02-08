@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import dk.gundmann.jenkins.cddbplugin.commands.Connector;
+import dk.gundmann.jenkins.cddbplugin.commands.DatabaseConnector;
 import dk.gundmann.jenkins.cddbplugin.commands.CreateVersionTable;
 import dk.gundmann.jenkins.cddbplugin.commands.DriverClassLoader;
 import dk.gundmann.jenkins.cddbplugin.commands.TableNameResolver;
@@ -26,13 +26,13 @@ public class TestUtils {
 	private Parameters setUpParameters() {
 		Parameters result = new Parameters(Parameter.aBuilder().withKey(TableNameResolver.KEY_VERSION_TABLE_NAME)
 				.withValue(StringUtil.EMPTY).build(), Parameter.aBuilder().withKey(DriverClassLoader.KEY_JAR_FILE_NAME)
-				.withValue("./target/jdbcjars/hsqldb.jar").build(), Parameter.aBuilder().withKey(Connector.KEY_USER)
-				.withValue("sa").build(), Parameter.aBuilder().withKey(Connector.KEY_PASSWORD).withValue("sa").build(),
-				Parameter.aBuilder().withKey(Connector.KEY_CONNECTION_STRING).withValue("jdbc:hsqldb:file:mydb")
+				.withValue("./target/jdbcjars/hsqldb.jar").build(), Parameter.aBuilder().withKey(DatabaseConnector.KEY_USER)
+				.withValue("sa").build(), Parameter.aBuilder().withKey(DatabaseConnector.KEY_PASSWORD).withValue("sa").build(),
+				Parameter.aBuilder().withKey(DatabaseConnector.KEY_CONNECTION_STRING).withValue("jdbc:hsqldb:file:mydb")
 						.build());
 		new TableNameResolver().execute(result);
 		new DriverClassLoader().execute(result);
-		new Connector().execute(result);
+		new DatabaseConnector().execute(result);
 		new CreateVersionTable().execute(result);
 		return result;
 	}
@@ -46,7 +46,7 @@ public class TestUtils {
 	}
 
 	public Connection getConnection() {
-		return getParameters().valueAsType(Connector.KEY_CONNECTION, Connection.class);
+		return getParameters().valueAsType(DatabaseConnector.KEY_DATABASE_ACCESS, DatabaseAccess.class).getConnection();
 	}
 
 	public Parameters getParameters() {

@@ -6,12 +6,12 @@ import static org.hamcrest.Matchers.equalTo;
 import org.junit.Test;
 
 import dk.gundmann.jenkins.cddbplugin.Result;
-import dk.gundmann.jenkins.cddbplugin.commands.Connector;
+import dk.gundmann.jenkins.cddbplugin.commands.DatabaseConnector;
 import dk.gundmann.jenkins.cddbplugin.commands.DriverClassLoader;
 import dk.gundmann.jenkins.cddbplugin.parameters.Parameter;
 import dk.gundmann.jenkins.cddbplugin.parameters.Parameters;
 
-public class ConnectorTest {
+public class DatabaseConnectorTest {
 
 	@Test
 	public void givenACorrectConnectionStringWillConnect() throws Exception {
@@ -24,20 +24,20 @@ public class ConnectorTest {
 		
 		Parameters parameters = new Parameters(
 				Parameter.aBuilder()
-					.withKey(Connector.KEY_USER)
+					.withKey(DatabaseConnector.KEY_USER)
 					.withValue("test")
 					.build(),
 				Parameter.aBuilder()
-					.withKey(Connector.KEY_PASSWORD)
+					.withKey(DatabaseConnector.KEY_PASSWORD)
 					.withValue("test")
 					.build(),
 				Parameter.aBuilder()
-					.withKey(Connector.KEY_CONNECTION_STRING)
+					.withKey(DatabaseConnector.KEY_CONNECTION_STRING)
 					.withValue("jdbc:hsqldb:file:enrolments")
 					.build());
 		
 		// when
-		Connector connect = new Connector();
+		DatabaseConnector connect = new DatabaseConnector();
 
 		// then
 		assertThat("The connection to the database faild!", connect.execute(parameters), equalTo(Result.ok()));

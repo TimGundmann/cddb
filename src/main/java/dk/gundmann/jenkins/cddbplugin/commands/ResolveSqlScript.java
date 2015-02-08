@@ -16,6 +16,7 @@ import dk.gundmann.jenkins.cddbplugin.Command;
 import dk.gundmann.jenkins.cddbplugin.Result;
 import dk.gundmann.jenkins.cddbplugin.parameters.Parameter;
 import dk.gundmann.jenkins.cddbplugin.parameters.Parameters;
+import dk.gundmann.jenkins.cddbplugin.utils.DatabaseAccess;
 
 public class ResolveSqlScript implements Command {
 
@@ -25,11 +26,9 @@ public class ResolveSqlScript implements Command {
 	public static final String DBVERSION = "dbVersion";
 	public static final String KEY_VERSION = "version";
 
-	private static final String SELECT_LAST_DATE = "select createdDate from %s order by createdDate desc";
 	private static final String SELECT_LAST_VERSION = "select databaseVersion from %s order by createdDate desc";
 	private static final String SELECT_VERSION = "select databaseVersion from %1$s where applicationVersion = '%2$s' order by createdDate desc";
-	private static final String SELEC_FILE_NAMES = "select fileName from %1$s where databaseVersion >= %2$s";
-
+	
 	@Override
 	public Result execute(Parameters parameters) {
 		File dir = new File(parameters.getParameter(SCRIPT_FOLDER).getValue().toString());
@@ -82,12 +81,12 @@ public class ResolveSqlScript implements Command {
 
 	private Object createFilesFromDBList(File dir, Parameters parameters) {
 		List<File> updateFiles = new ArrayList<File>();
-		for (String file : getFileNamesFromDB(parameters)) {
+		for (String file : getDatabaseAccess(parameters).getFileNamesFromDB(getTabelName(parameters), getDatabaseVerion(parameters))) {
 			updateFiles.add(new File(file));
 		}
 		return updateFiles;
 	}
-
+	
 	private Object createFilesNewerThan(Date lastDate, File dir) {
 		System.out.println("db date: " + lastDate);
 		List<File> updateFiles = new ArrayList<File>();
@@ -110,21 +109,6 @@ public class ResolveSqlScript implements Command {
 		return updateFiles;
 	}
 
-	private List<String> getFileNamesFromDB(Parameters parameters) {
-		List<String> result = new ArrayList<String>();
-		try {
-			ResultSet fileNameList = getConnection(parameters)
-					.createStatement()
-					.executeQuery(String.format(SELEC_FILE_NAMES, getTabelName(parameters), getDatabaseVerion(parameters)));
-			while (fileNameList.next()) {
-				result.add(fileNameList.getString("fileName"));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
- 		return result;
-	}
-
 	private List<File> createFileList(File dir) {
 		List<File> updateFiles = new ArrayList<File>();
 		if (dir.list() != null) {
@@ -136,41 +120,19 @@ public class ResolveSqlScript implements Command {
 	}
 
 	private Integer findNewestDBVersion(Parameters parameters) {
-		return queryForDBVersion(getConnection(parameters),
-				String.format(SELECT_LAST_VERSION, getTabelName(parameters)));
+		return getDatabaseAccess(parameters).getLatestDBVersion(getTabelName(parameters));
 	}
 
 	private Integer findDBVersion(Parameters parameters) {
-		return queryForDBVersion(getConnection(parameters), 
-				String.format(SELECT_VERSION, getTabelName(parameters), getRequestVersion(parameters)));
-	}
-
-	private Integer queryForDBVersion(Connection connection, String query) {
-		try {
-			ResultSet queryResult = connection.createStatement().executeQuery(query);
-			if (queryResult.next()) {
-				return queryResult.getInt("databaseVersion");
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return 0;
+		return getDatabaseAccess(parameters).findDBVersionBy(getRequestVersion(parameters), getTabelName(parameters));
 	}
 
 	private Date queryForLastInsertDate(Parameters parameters) {
-		try {
-			ResultSet queryResult = getConnection(parameters).createStatement().executeQuery(String.format(SELECT_LAST_DATE, getTabelName(parameters)));
-			if (queryResult.next()) {
-				return queryResult.getTimestamp("createdDate");
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return null;
+		return getDatabaseAccess(parameters).getLatestDate(getTabelName(parameters));
 	}
 
-	private Object getDatabaseVerion(Parameters parameters) {
-		return parameters.valueAsString(DBVERSION);
+	private int getDatabaseVerion(Parameters parameters) {
+		return parameters.valueAsType(DBVERSION, Integer.class);
 	}
 
 	private String getRequestVersion(Parameters parameters) {
@@ -181,8 +143,8 @@ public class ResolveSqlScript implements Command {
 		return parameters.valueAsString(TableNameResolver.KEY_VERSION_TABLE_NAME);
 	}
 
-	private Connection getConnection(Parameters parameters) {
-		return parameters.valueAsType(Connector.KEY_CONNECTION, Connection.class);
+	private DatabaseAccess getDatabaseAccess(Parameters parameters) {
+		return parameters.valueAsType(DatabaseConnector.KEY_DATABASE_ACCESS, DatabaseAccess.class);
 	}
 
 }

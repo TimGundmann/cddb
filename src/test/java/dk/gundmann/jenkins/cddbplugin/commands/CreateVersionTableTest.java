@@ -11,7 +11,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
-import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,11 +23,9 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import dk.gundmann.jenkins.cddbplugin.Result;
-import dk.gundmann.jenkins.cddbplugin.commands.Connector;
-import dk.gundmann.jenkins.cddbplugin.commands.CreateVersionTable;
-import dk.gundmann.jenkins.cddbplugin.commands.TableNameResolver;
 import dk.gundmann.jenkins.cddbplugin.parameters.Parameter;
 import dk.gundmann.jenkins.cddbplugin.parameters.Parameters;
+import dk.gundmann.jenkins.cddbplugin.utils.DatabaseAccess;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CreateVersionTableTest {
@@ -36,7 +33,7 @@ public class CreateVersionTableTest {
 	private static final String GIVEN_TABLE_NAME = "given table name";
 
 	@Mock
-	private Connection connection;
+	private DatabaseAccess databaseAccess;
 	
 	@Mock
 	private Statement statement;
@@ -47,40 +44,21 @@ public class CreateVersionTableTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		doReturn(statement).when(connection).createStatement();
 		parameters = new Parameters(Parameter.aBuilder()
-				.withKey(Connector.KEY_CONNECTION)
-				.withValue(connection)
+				.withKey(DatabaseConnector.KEY_DATABASE_ACCESS)
+				.withValue(databaseAccess)
 				.build());
 	}
 	
 	@Test
 	public void verifyThatTheTablesIsCreated() throws Exception {
-		// given 
-		setUpTableExists(false);
-		
-		// when then
+		// given when then
 		assertThat(createVersionTable.execute(parameters), equalTo(Result.ok()));
-		verify(connection).createStatement();
-		verify(statement).execute(contains("create table"));
-	}
-	
-	@Test
-	public void verifyThatIfATableExistsThenItIsNotCreated() throws Exception {
-		// given
-		setUpTableExists(true);
-
-		// when then
-		assertThat(createVersionTable.execute(parameters), equalTo(Result.ok()));
-		verifyZeroInteractions(statement);
 	}
 	
 	@Test
 	public void givenATableNameWillUseIt() throws Exception {
-		// given
-		setUpTableExists(false);
-
-		// when
+		// given when
 		Result result = createVersionTable.execute(parameters.add(
 				Parameter.aBuilder()
 					.withKey(TableNameResolver.KEY_VERSION_TABLE_NAME)
@@ -89,7 +67,7 @@ public class CreateVersionTableTest {
 
 		// then
 		assertThat(result, equalTo(Result.ok()));
-		verify(statement).execute(contains(GIVEN_TABLE_NAME));
+		verify(databaseAccess).createTable(contains(GIVEN_TABLE_NAME));
 	}
 
 	@Test
@@ -98,12 +76,4 @@ public class CreateVersionTableTest {
 		assertThat(createVersionTable.execute(new Parameters()), equalTo(Result.faild()));
 	}
 	
-	private void setUpTableExists(boolean exists) throws SQLException {
-		DatabaseMetaData metaData = mock(DatabaseMetaData.class);
-		ResultSet resultSet = mock(ResultSet.class); 
-
-		when(connection.getMetaData()).thenReturn(metaData);
-		when(metaData.getTables(anyString(), anyString(), anyString(), any(String[].class))).thenReturn(resultSet);
-		when(resultSet.first()).thenReturn(exists);
-	}
 }
